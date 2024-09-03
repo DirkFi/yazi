@@ -1,38 +1,47 @@
-use std::{collections::{HashMap, HashSet}, mem, ops::Deref, sync::atomic::Ordering};
+use std::{
+	collections::{HashMap, HashSet},
+	mem,
+	ops::Deref,
+	sync::atomic::Ordering,
+};
 
-use tokio::{fs::{self, DirEntry}, select, sync::mpsc::{self, UnboundedReceiver}};
+use tokio::{
+	fs::{self, DirEntry},
+	select,
+	sync::mpsc::{self, UnboundedReceiver},
+};
 use yazi_config::{manager::SortBy, MANAGER};
 use yazi_shared::fs::{maybe_exists, Cha, File, FilesOp, Url, FILES_TICKET};
 
 use super::{FilesSorter, Filter};
 
 pub struct Files {
-	hidden:       Vec<File>,
-	items:        Vec<File>,
-	ticket:       u64,
-	version:      u64,
+	hidden: Vec<File>,
+	items: Vec<File>,
+	ticket: u64,
+	version: u64,
 	pub revision: u64,
 
 	pub sizes: HashMap<Url, u64>,
 
-	sorter:      FilesSorter,
-	filter:      Option<Filter>,
+	sorter: FilesSorter,
+	filter: Option<Filter>,
 	show_hidden: bool,
 }
 
 impl Default for Files {
 	fn default() -> Self {
 		Self {
-			items:    Default::default(),
-			hidden:   Default::default(),
-			ticket:   Default::default(),
-			version:  Default::default(),
+			items: Default::default(),
+			hidden: Default::default(),
+			ticket: Default::default(),
+			version: Default::default(),
 			revision: Default::default(),
 
 			sizes: Default::default(),
 
-			sorter:      Default::default(),
-			filter:      Default::default(),
+			sorter: Default::default(),
+			filter: Default::default(),
 			show_hidden: MANAGER.show_hidden,
 		}
 	}
@@ -41,7 +50,9 @@ impl Default for Files {
 impl Deref for Files {
 	type Target = Vec<File>;
 
-	fn deref(&self) -> &Self::Target { &self.items }
+	fn deref(&self) -> &Self::Target {
+		&self.items
+	}
 }
 
 impl Files {
@@ -345,15 +356,21 @@ impl Files {
 impl Files {
 	// --- Items
 	#[inline]
-	pub fn position(&self, url: &Url) -> Option<usize> { self.iter().position(|f| f.url == *url) }
+	pub fn position(&self, url: &Url) -> Option<usize> {
+		self.iter().position(|f| f.url == *url)
+	}
 
 	// --- Ticket
 	#[inline]
-	pub fn ticket(&self) -> u64 { self.ticket }
+	pub fn ticket(&self) -> u64 {
+		self.ticket
+	}
 
 	// --- Sorter
 	#[inline]
-	pub fn sorter(&self) -> &FilesSorter { &self.sorter }
+	pub fn sorter(&self) -> &FilesSorter {
+		&self.sorter
+	}
 
 	pub fn set_sorter(&mut self, sorter: FilesSorter) {
 		if self.sorter != sorter {
@@ -364,7 +381,9 @@ impl Files {
 
 	// --- Filter
 	#[inline]
-	pub fn filter(&self) -> Option<&Filter> { self.filter.as_ref() }
+	pub fn filter(&self) -> Option<&Filter> {
+		self.filter.as_ref()
+	}
 
 	pub fn set_filter(&mut self, filter: Option<Filter>) -> bool {
 		if self.filter == filter {
